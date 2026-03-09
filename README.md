@@ -1,10 +1,12 @@
 # Software Engineering Skills — Index
 
-A set of 6 technology-agnostic skills covering the full software development lifecycle.
+A set of 8 technology-agnostic skills covering the full software development lifecycle.
 Each skill is a SKILL.md file that can be installed into Claude to guide engineering work.
 All skills are compatible with Replit and any AI agent environment.
 
 ## Skills
+
+### Core Workflow (Sequential)
 
 | Skill | Purpose | Use After |
 |-------|---------|-----------|
@@ -15,12 +17,22 @@ All skills are compatible with Replit and any AI agent environment.
 | **code-review** | Review code for correctness, security, quality | build |
 | **test** | Integration, E2E, and pre-ship test strategy | code-review |
 
+### Cross-Cutting (Continuous)
+
+| Skill | Purpose | When |
+|-------|---------|------|
+| **pm** | Track issues, manage backlog, report status | Throughout — every step |
+| **tech-writer** | Maintain docs, changelogs, API reference, ADRs | After every feature ships |
+
 ## The Development Loop
 
 ```
 spec → plan → tdd → build → code-review → test → ship
   ↑___________________________|
         (iterate on next feature)
+
+  pm ─────────────── runs continuously across all steps ───────────────
+  tech-writer ────── updates docs after build, review, test, and ship ─
 ```
 
 ## How to Install
@@ -36,3 +48,5 @@ Install into Claude's skills directory to make them available in your project.
 - **build**: Triggered by: "implement this", "write the code", "set up the project", "scaffold", "start coding"
 - **code-review**: Triggered by: "review this code", "PR review", "find bugs", "self-review", "check my code"
 - **test**: Triggered by: "integration tests", "E2E tests", "test strategy", "test coverage", "validate before shipping"
+- **pm**: Triggered by: "log this issue", "track this bug", "update the backlog", "project status", "triage issues", "what's blocking us"
+- **tech-writer**: Triggered by: "update the docs", "write documentation", "add to the changelog", "document this API", "write a README", "docs are out of date"

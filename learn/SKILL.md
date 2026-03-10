@@ -91,12 +91,12 @@ Knowledge is only valuable if it's found when needed. Place it strategically:
 | Knowledge Type | Where to Put It |
 |----------------|-----------------|
 | **Architecture decisions** | `docs/decisions/` as ADR files (ADR-001.md, etc.) |
-| **Project conventions** | `CLAUDE.md` or project root config files |
+| **Project conventions** | `CLAUDE.md`, `.replit` agent config, or project root config files |
 | **API behavior / gotchas** | Inline comments near the relevant code |
 | **Setup / environment** | `README.md` or `docs/setup.md` |
 | **Patterns for reuse** | `docs/patterns.md` or `CLAUDE.md` |
 | **Lessons from bugs** | `docs/decisions/` or inline comments at fix site |
-| **Agent context** | `CLAUDE.md` — this is the agent's persistent memory |
+| **Agent context** | `CLAUDE.md` and `.replit` agent config — persistent agent memory |
 
 ### CLAUDE.md as Agent Memory
 
@@ -108,6 +108,27 @@ knowledge that the agent needs across sessions. Update it with:
 - Architectural decisions that constrain future work
 - Testing patterns specific to this project
 - Build/deploy quirks
+
+### .replit as Replit Agent Memory
+
+On Replit, the `.replit` file contains an `[agent]` section that serves as persistent context
+for the Replit AI agent. Update it alongside `CLAUDE.md` so knowledge is available regardless
+of which agent environment is used.
+
+**What to update in `.replit`:**
+
+- `systemPrompt` or agent instructions — add project-specific conventions and constraints
+- `[run]` command — update if build/run steps changed during the feature
+- Environment or dependency notes that affect how the agent should operate
+
+**When to update `.replit`:**
+- New build/run commands were established or changed
+- Project conventions were decided that the Replit agent should follow
+- Environment setup changed (ports, entry points, dependencies)
+- Gotchas were discovered that affect how code should be run or tested
+
+Keep `.replit` and `CLAUDE.md` in sync — they serve the same purpose for different agent
+environments. When you update one, check if the other needs the same update.
 
 **Format for CLAUDE.md entries:**
 
@@ -142,14 +163,14 @@ Run through this checklist:
 1. IDENTIFY the root cause and the fix
 2. DOCUMENT as a Gotcha (see template above)
 3. ADD     a code comment at the fix site explaining the non-obvious behavior
-4. UPDATE  CLAUDE.md if this is a recurring or project-wide concern
+4. UPDATE  CLAUDE.md and .replit if this is a recurring or project-wide concern
 ```
 
 ### After an Architectural Decision
 
 ```
 1. WRITE   an ADR (Architecture Decision Record) in docs/decisions/
-2. UPDATE  CLAUDE.md with the constraint this creates
+2. UPDATE  CLAUDE.md and .replit with the constraint this creates
 3. UPDATE  README.md if it affects setup, build, or usage
 ```
 
@@ -158,6 +179,7 @@ Run through this checklist:
 Every few features or at natural milestones:
 
 - [ ] Review `CLAUDE.md` — remove stale entries, consolidate duplicates
+- [ ] Review `.replit` agent config — keep in sync with `CLAUDE.md`
 - [ ] Review `docs/decisions/` — mark superseded ADRs
 - [ ] Review inline code comments — remove any that are now obvious or wrong
 - [ ] Check README — does it still reflect how to set up and run the project?

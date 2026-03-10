@@ -15,6 +15,10 @@ description: >
 Drive a feature from idea to shipped code by running every skill in the pipeline sequentially,
 enforcing quality gates between phases, and carrying context forward so nothing is lost.
 
+The context skill runs first as Phase 0 — it acts as the project's subject matter expert,
+injecting domain knowledge, prior decisions, and conventions so that spec and plan start
+with full awareness of the project state.
+
 ## Orchestrator Principles
 
 1. **One phase at a time** — Complete each phase fully before moving to the next.
@@ -26,23 +30,24 @@ enforcing quality gates between phases, and carrying context forward so nothing 
 ## The Pipeline
 
 ```
-┌──────────────────────────────────────────────────────────────────────┐
-│                         ORCHESTRATOR                                 │
-│                                                                      │
-│  ┌─────┐   ┌──────┐   ┌─────┐   ┌───────┐   ┌────────┐   ┌──────┐ │
-│  │ spec │ → │ plan │ → │ tdd │ → │ build │ → │ review │ → │ test │ │
-│  └─────┘   └──────┘   └─────┘   └───────┘   └────────┘   └──────┘ │
-│      │          │          │          │           │           │      │
-│      ▼          ▼          ▼          ▼           ▼           ▼      │
-│  ┌──────────────────────────────────────────────────────────────┐   │
-│  │                    pm (continuous)                            │   │
-│  └──────────────────────────────────────────────────────────────┘   │
-│                                                                      │
-│  After pipeline completes:                                           │
-│  ┌─────────────┐   ┌───────┐                                        │
-│  │ tech-writer  │ → │ learn │                                        │
-│  └─────────────┘   └───────┘                                        │
-└──────────────────────────────────────────────────────────────────────┘
+┌───────────────────────────────────────────────────────────────────────────┐
+│                            ORCHESTRATOR                                    │
+│                                                                           │
+│  ┌─────────┐   ┌─────┐   ┌──────┐   ┌─────┐   ┌───────┐   ┌────────┐  │
+│  │ context  │ → │ spec │ → │ plan │ → │ tdd │ → │ build │ → │ review │  │
+│  └─────────┘   └─────┘   └──────┘   └─────┘   └───────┘   └────────┘  │
+│       │            │          │          │          │           │         │
+│       │            ▼          ▼          ▼          ▼           ▼         │
+│       │   ┌──────────────────────────────────────────────────────────┐   │
+│       │   │                    pm (continuous)                        │   │
+│       │   └──────────────────────────────────────────────────────────┘   │
+│       │                                                                   │
+│       │   ┌──────┐   ┌─────────────┐   ┌───────┐                        │
+│       │   │ test │ → │ tech-writer  │ → │ learn │                        │
+│       │   └──────┘   └─────────────┘   └───────┘                        │
+│       │                                                                   │
+│       └── context is consulted by spec and plan as SME ──────────────    │
+└───────────────────────────────────────────────────────────────────────────┘
 ```
 
 ## Phase Execution Protocol
@@ -60,10 +65,26 @@ For each phase, follow this pattern:
 
 ## Phase Details
 
+### Phase 0: Context
+
+**Invoke**: context skill
+**Input**: Feature request or problem statement + existing `.context/` folder
+**Output**: Context briefing document for downstream skills
+
+**Exit criteria**:
+- [ ] `.context/` folder scanned and relevant files identified
+- [ ] Context briefing produced with domain knowledge, prior decisions, conventions, and constraints
+- [ ] Stale or missing context flagged for update
+- [ ] Spec and plan skills have the domain understanding they need
+
+**PM action**: Log context state — note any gaps that could cause rework.
+
+---
+
 ### Phase 1: Spec
 
-**Invoke**: spec skill
-**Input**: Feature request, user description, or problem statement
+**Invoke**: spec skill (with context briefing from Phase 0)
+**Input**: Feature request, user description, or problem statement + **context briefing**
 **Output**: `docs/specs/[feature]-spec.md`
 
 **Exit criteria**:
@@ -215,23 +236,24 @@ When the user provides a feature description, begin immediately:
 
 ```
 "I'll orchestrate this feature through the full pipeline.
-Starting with Phase 1: Spec."
+Starting with Phase 0: Context — gathering project knowledge."
 ```
 
 Then proceed phase by phase, announcing each transition:
 
 ```
-"Phase 1 (Spec) complete. Moving to Phase 2: Plan."
+"Phase 0 (Context) complete. Moving to Phase 1: Spec."
 ```
 
 ## Resuming a Partial Pipeline
 
 If a pipeline was interrupted, check for existing artifacts:
-1. Look in `docs/specs/` for a spec
-2. Look in `docs/plans/` for a plan
-3. Check for existing test files
-4. Check git log for build commits
-5. Resume from the earliest incomplete phase
+1. Check `.context/` for project context (always re-scan on resume)
+2. Look in `docs/specs/` for a spec
+3. Look in `docs/plans/` for a plan
+4. Check for existing test files
+5. Check git log for build commits
+6. Resume from the earliest incomplete phase
 
 ## Context Passing Template
 

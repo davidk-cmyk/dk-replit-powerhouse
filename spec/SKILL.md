@@ -15,6 +15,10 @@ description: >
 Write clear, complete, technology-agnostic software specifications that can be handed to any
 engineer (or AI agent) to implement correctly the first time.
 
+**Always consult the context skill first.** Before writing any spec, review the project's
+`.context/` folder (or context briefing if provided by the orchestrator) to ground your
+requirements in the project's domain, prior decisions, and constraints.
+
 ## What a Good Spec Contains
 
 A spec answers: **What** should be built, **Why**, **Who** uses it, and **How** success is measured.
@@ -128,6 +132,7 @@ How will we know this feature succeeded after launch?
 
 ## Process
 
+0. **Consult context** — Before drafting, read the context briefing (from the context skill or `.context/` folder). Understand domain concepts, prior decisions, constraints, and conventions. A spec written without context will miss requirements and repeat past mistakes.
 1. **Start async** — Draft the spec alone first; iterate with stakeholders after.
 2. **Review loop** — Share with: engineer, PM, design, QA (at minimum).
 3. **Approval gate** — No tickets or code until the spec is Approved.
